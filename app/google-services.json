@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "903660523163",
+    "firebase_url": "https://somana-d21e2-default-rtdb.firebaseio.com",
+    "project_id": "somana-d21e2",
+    "storage_bucket": "somana-d21e2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:903660523163:android:253788e3a1fb13b675c03e",
+        "android_client_info": {
+          "package_name": "com.example.anew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBADjKAxhD2BTMlFMe4DDWp8fS50Yek-yk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
