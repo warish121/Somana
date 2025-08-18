@@ -34,9 +34,6 @@ class Home_Page : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
-        
-
         // Initialize Firebase
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().reference
@@ -53,8 +50,6 @@ class Home_Page : AppCompatActivity() {
         }
 
 
-
-
         // Fetch all users
         loadPosts()
         setupExceptionHandler()
@@ -66,7 +61,7 @@ class Home_Page : AppCompatActivity() {
         binding.recyclerView.adapter = postadapter
 
         // Add scroll protection
-        binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -87,6 +82,7 @@ class Home_Page : AppCompatActivity() {
                     startActivity(Intent(this, Profile_::class.java))
                     true
                 }
+
                 else -> false
             }
         }
@@ -113,18 +109,19 @@ class Home_Page : AppCompatActivity() {
                 }
 
 
-
                 // If posts exist, load them
                 snapshot.children.forEach { userSnapshot ->
                     try {
                         val user = userSnapshot.getValue(Users::class.java) ?: return@forEach
-                        val profileImg = userSnapshot.child("profileImage").getValue(String::class.java) ?: ""
+                        val profileImg =
+                            userSnapshot.child("profileImage").getValue(String::class.java) ?: ""
                         val postsNode = userSnapshot.child("posts")
 
                         if (postsNode.exists()) {
                             postsNode.children.forEach { postSnapshot ->
                                 try {
-                                    val postImg = postSnapshot.child("postImg").getValue(String::class.java)
+                                    val postImg =
+                                        postSnapshot.child("postImg").getValue(String::class.java)
                                     if (postImg != null) {
                                         userList.add(user)
                                         profileList.add(profileImg)
@@ -168,13 +165,6 @@ class Home_Page : AppCompatActivity() {
             android.os.Process.killProcess(android.os.Process.myPid())
         }
     }
-
-
-
-
-
-
-
 
 
 }

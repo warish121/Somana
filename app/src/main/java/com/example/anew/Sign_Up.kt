@@ -29,7 +29,6 @@ class Sign_Up : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
         // Initialize database reference to "users" node
         databaseReference = FirebaseDatabase.getInstance().getReference("users")
         auth = FirebaseAuth.getInstance()
@@ -44,16 +43,14 @@ class Sign_Up : AppCompatActivity() {
             val SignPassword = binding.passwordSignup.text.toString()
             val confirmpass = binding.ConfirmpasswordSignupn.text.toString()
 
-            if(userName.isEmpty() || Email.isEmpty() || SignPassword.isEmpty() || confirmpass.isEmpty()) {
+            if (userName.isEmpty() || Email.isEmpty() || SignPassword.isEmpty() || confirmpass.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
-            }
-            else if(SignPassword != confirmpass) {
+            } else if (SignPassword != confirmpass) {
                 Toast.makeText(this, "Password is not matching", Toast.LENGTH_SHORT).show()
-            }
-            else {
+            } else {
                 auth.createUserWithEmailAndPassword(Email, SignPassword)
                     .addOnCompleteListener { task ->
-                        if(task.isSuccessful) {
+                        if (task.isSuccessful) {
                             startActivity(Intent(this, Home_Page::class.java))
                             finish()
                             val currentUser = auth.currentUser
@@ -64,12 +61,24 @@ class Sign_Up : AppCompatActivity() {
                                 // Save user data under their UID
                                 databaseReference.child(user.uid).setValue(dataItem)
                                     .addOnCompleteListener { dbTask ->
-                                        if(dbTask.isSuccessful) {
-                                            Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show()
+                                        if (dbTask.isSuccessful) {
+                                            Toast.makeText(
+                                                this,
+                                                "Registration Successful",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
 
                                         } else {
-                                            Toast.makeText(this, "Failed to save user data", Toast.LENGTH_SHORT).show()
-                                            Log.e("FIREBASE_DB_ERROR", "Failed to save user data", dbTask.exception)
+                                            Toast.makeText(
+                                                this,
+                                                "Failed to save user data",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            Log.e(
+                                                "FIREBASE_DB_ERROR",
+                                                "Failed to save user data",
+                                                dbTask.exception
+                                            )
                                         }
                                     }
                             }

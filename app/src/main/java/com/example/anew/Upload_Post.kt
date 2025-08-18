@@ -39,8 +39,6 @@ class Upload_Post : AppCompatActivity() {
     private lateinit var uploadbtn: TextView
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -69,51 +67,59 @@ class Upload_Post : AppCompatActivity() {
         }
 
 
-
     }
 
-    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_OK) {
-            val uri = it.data?.data!!
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                val uri = it.data?.data!!
 
-            val postImage = findViewById<ImageView>(R.id.uploadedPost)
-            val uploadthepost = findViewById<TextView>(R.id.uploadtopost)
-            val captiontext = findViewById<EditText>(R.id.captionText)
+                val postImage = findViewById<ImageView>(R.id.uploadedPost)
+                val uploadthepost = findViewById<TextView>(R.id.uploadtopost)
+                val captiontext = findViewById<EditText>(R.id.captionText)
 
-            captiontext.visibility = View.VISIBLE
-            postImage.visibility = View.VISIBLE
-            uploadthepost.visibility = View.VISIBLE
+                captiontext.visibility = View.VISIBLE
+                postImage.visibility = View.VISIBLE
+                uploadthepost.visibility = View.VISIBLE
 
-            postImage.setImageURI(uri)
-            uploadbtn.visibility = View.GONE
-            create.visibility = View.GONE
+                postImage.setImageURI(uri)
+                uploadbtn.visibility = View.GONE
+                create.visibility = View.GONE
 
-            // Take persistable permission (important for Android 11+)
-            contentResolver.takePersistableUriPermission(
-                uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
+                // Take persistable permission (important for Android 11+)
+                contentResolver.takePersistableUriPermission(
+                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
 
-            uploadthepost.setOnClickListener {
-                // Upload to Backendless first
-                uploadImage(uri, "Post") { backendlessUrl ->
-                    // Only after successful upload, save to Firebase
-                    val userPostsRef = databaseReference
-                        .child("users")
-                        .child(Firebase.auth.currentUser!!.uid)
-                        .child("posts")
-                        .push()
+                uploadthepost.setOnClickListener {
+                    // Upload to Backendless first
+                    uploadImage(uri, "Post") { backendlessUrl ->
+                        // Only after successful upload, save to Firebase
+                        val userPostsRef = databaseReference
+                            .child("users")
+                            .child(Firebase.auth.currentUser!!.uid)
+                            .child("posts")
+                            .push()
 
-                    userPostsRef.setValue(Post(backendlessUrl))
-                        .addOnCompleteListener {
-                            Toast.makeText(this, "Post uploaded successfully!", Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Failed to save post: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
+                        userPostsRef.setValue(Post(backendlessUrl))
+                            .addOnCompleteListener {
+                                Toast.makeText(
+                                    this,
+                                    "Post uploaded successfully!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(
+                                    this,
+                                    "Failed to save post: ${e.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                    }
                 }
             }
         }
-    }
 
     private fun uploadImage(uri: Uri, folderName: String, onSuccess: (String) -> Unit) {
         try {
@@ -144,7 +150,11 @@ class Upload_Post : AppCompatActivity() {
 
                     override fun handleFault(fault: BackendlessFault) {
                         runOnUiThread {
-                            Toast.makeText(this@Upload_Post, "$folderName upload failed: ${fault.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this@Upload_Post,
+                                "$folderName upload failed: ${fault.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                 }
@@ -154,6 +164,7 @@ class Upload_Post : AppCompatActivity() {
             Log.e("UploadError", e.stackTraceToString())
         }
     }
+
     // Helper to save URL to SharedPreferences
     private fun saveImageUrl(url: String, type: String) {
         val sharedPref = getSharedPreferences("BackendlessImages", MODE_PRIVATE)
@@ -162,7 +173,6 @@ class Upload_Post : AppCompatActivity() {
             apply()
         }
     }
-
 
 
     // Helper to convert Uri to File
@@ -181,44 +191,11 @@ class Upload_Post : AppCompatActivity() {
                     null
                 }
             }
+
             "file" -> File(uri.path!!)
             else -> null
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

@@ -84,12 +84,17 @@ class All_Post : AppCompatActivity() {
 
                 // If no valid URLs were found
                 if (postList.isEmpty()) {
-                    Toast.makeText(this@All_Post, "No valid image URLs found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@All_Post, "No valid image URLs found", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@All_Post, "Failed to load posts: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@All_Post,
+                    "Failed to load posts: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.e("FirebaseError", "Database error: ${error.message}")
             }
         })

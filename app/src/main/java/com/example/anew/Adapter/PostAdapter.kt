@@ -44,7 +44,6 @@ class PostAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
 
-
         private var isLiked = false
         private var likeCount = 0
 
@@ -99,13 +98,14 @@ class PostAdapter(
 
         private fun toggleLike(postId: String, postOwnerId: String) {
             val currentUser = auth.currentUser?.uid ?: return
-            val postRef = database.child("users").child(postOwnerId).child("posts").child(postId).child("likes").child(currentUser)
+            val postRef = database.child("users").child(postOwnerId).child("posts").child(postId)
+                .child("likes").child(currentUser)
 
             if (isLiked) {
 
-                postRef.child("likeCount").setValue(likeCount-- )
+                postRef.child("likeCount").setValue(likeCount--)
                     .addOnSuccessListener {
-                        likeCount>0
+                        likeCount > 0
                         isLiked = false
 
 

@@ -41,33 +41,17 @@ class Profile_ : AppCompatActivity() {
     private lateinit var name: TextView
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_profile)
-
         name = findViewById(R.id.username)
-
-
-
-
-
-        // fetch name fom firebase database
-
-
         databaseReference = Firebase.database.reference
-
         val userId = Firebase.auth.currentUser?.uid
-
         databaseReference.child("users").child(userId.toString()).get()
             .addOnSuccessListener {
-
                 val user = it.child("name").value.toString()
-
                 name.text = user
-
             }
             .addOnFailureListener {
                 Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
@@ -78,16 +62,12 @@ class Profile_ : AppCompatActivity() {
         loadProfile()
 
 
-
-
         val GoAllpost = findViewById<CardView>(R.id.All_Post)
-
-
         GoAllpost.setOnClickListener {
             startActivity(Intent(this, All_Post::class.java))
         }
 
-        // Set up click listeners
+
         findViewById<ImageView>(R.id.changeProfile).setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 type = "image/*"
@@ -107,10 +87,10 @@ class Profile_ : AppCompatActivity() {
         }
 
 
-
     }
 
-    private val profilePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val profilePicker =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 val uri = result.data?.data!!
 
@@ -119,7 +99,7 @@ class Profile_ : AppCompatActivity() {
                 )
 
 
-                uploadToBackendlessImage(uri, "Profile"){ backendlessUrl ->
+                uploadToBackendlessImage(uri, "Profile") { backendlessUrl ->
 
 
                     // Update the profile image in Firebase
@@ -131,62 +111,60 @@ class Profile_ : AppCompatActivity() {
 
                         }
                         .addOnFailureListener {
-                            Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT)
+                                .show()
                         }
-
-
 
 
                 }
 
 
+            }
+        }
 
 
+    private val bannerPicker =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val uri = result.data?.data!!
+
+                contentResolver.takePersistableUriPermission(
+                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+
+
+                //Uploading image to backendless
+
+                uploadToBackendlessImage(uri, "Banner") { backendlessUrl ->
+                    //uploading img to firebase database
+                    val bannerbach = databaseReference
+                        .child("users")
+                        .child(Firebase.auth.currentUser!!.uid)
+                        .child("BannerImg")
+                        .push()
+                    bannerbach.setValue(BannerBack(backendlessUrl))
+                        .addOnCompleteListener {
+                            Toast.makeText(this, "Uploaded", Toast.LENGTH_SHORT).show()
+                            loadBannerImage()
+
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "No", Toast.LENGTH_SHORT).show()
+                        }
+
+
+                }
 
 
             }
         }
 
 
-    private val bannerPicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val uri = result.data?.data!!
-
-            contentResolver.takePersistableUriPermission(
-                uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
-
-
-            //Uploading image to backendless
-
-            uploadToBackendlessImage(uri, "Banner"){backendlessUrl->
-                //uploading img to firebase database
-                val bannerbach = databaseReference
-                    .child("users")
-                    .child(Firebase.auth.currentUser!!.uid)
-                    .child("BannerImg")
-                    .push()
-                bannerbach.setValue(BannerBack(backendlessUrl))
-                    .addOnCompleteListener {
-                        Toast.makeText(this, "Uploaded", Toast.LENGTH_SHORT).show()
-                        loadBannerImage()
-
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "No", Toast.LENGTH_SHORT).show()
-                    }
-
-
-            }
-
-
-
-
-        }
-    }
-
-
-    private fun uploadToBackendlessImage(uri: Uri, folderName: String, onSuccess: (String) -> Unit) {
+    private fun uploadToBackendlessImage(
+        uri: Uri,
+        folderName: String,
+        onSuccess: (String) -> Unit
+    ) {
         try {
             val file = uriToFile(uri) ?: run {
                 Toast.makeText(this, "Could not get file from URI", Toast.LENGTH_SHORT).show()
@@ -203,16 +181,23 @@ class Profile_ : AppCompatActivity() {
                         runOnUiThread {
                             response?.fileURL?.let { url ->
                                 saveImageUrl(url, (folderName == "").toString())
-                                            onSuccess(url) // Callback with the Backendless URL
-                                            Toast.makeText(
-                                            this@Profile_, "$folderName upload successful!", Toast.LENGTH_SHORT).show()
+                                onSuccess(url) // Callback with the Backendless URL
+                                Toast.makeText(
+                                    this@Profile_,
+                                    "$folderName upload successful!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     }
 
                     override fun handleFault(fault: BackendlessFault) {
                         runOnUiThread {
-                            Toast.makeText(this@Profile_, "$folderName upload failed: ${fault.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this@Profile_,
+                                "$folderName upload failed: ${fault.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                 }
@@ -250,6 +235,7 @@ class Profile_ : AppCompatActivity() {
                     null
                 }
             }
+
             "file" -> File(uri.path!!)
             else -> null
         }
@@ -264,27 +250,31 @@ class Profile_ : AppCompatActivity() {
             .child("BannerImg")
 
         // Get the most recent banner (last pushed entry)
-        bannerRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (bannerSnapshot in snapshot.children) {
-                    val bannerUrl = bannerSnapshot.child("bannerImg").getValue(String::class.java)
-                    bannerUrl?.let { url ->
-                        Toast.makeText(this@Profile_, "Ho gaya", Toast.LENGTH_SHORT).show()
-                        Glide.with(this@Profile_)
-                            .load(url)
-                            .into(findViewById(R.id.bannerimg))
+        bannerRef.orderByKey().limitToLast(1)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (bannerSnapshot in snapshot.children) {
+                        val bannerUrl =
+                            bannerSnapshot.child("bannerImg").getValue(String::class.java)
+                        bannerUrl?.let { url ->
+                            Toast.makeText(this@Profile_, "Ho gaya", Toast.LENGTH_SHORT).show()
+                            Glide.with(this@Profile_)
+                                .load(url)
+                                .into(findViewById(R.id.bannerimg))
 
 
-                    } ?: run {
-                        Toast.makeText(this@Profile_, "No banner found", Toast.LENGTH_SHORT).show()
+                        } ?: run {
+                            Toast.makeText(this@Profile_, "No banner found", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@Profile_, "Failed to load banner", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@Profile_, "Failed to load banner", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
     }
 
 
@@ -295,44 +285,35 @@ class Profile_ : AppCompatActivity() {
             .child("ProfileImg") // Make sure this matches your database exactly
 
         // Get the most recent profile image
-        profileRef.orderByKey().limitToLast(1).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (profileSnapshot in snapshot.children) {
-                    val profileBack = profileSnapshot.child("profileImg").getValue(String::class.java)
-                    profileBack?.let { url ->
-                        Glide.with(this@Profile_)
-                            .load(url)
-                            .into(findViewById(R.id.profileback))
-                    } ?: run {
-                        Toast.makeText(this@Profile_, "No profile image found", Toast.LENGTH_SHORT).show()
+        profileRef.orderByKey().limitToLast(1)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (profileSnapshot in snapshot.children) {
+                        val profileBack =
+                            profileSnapshot.child("profileImg").getValue(String::class.java)
+                        profileBack?.let { url ->
+                            Glide.with(this@Profile_)
+                                .load(url)
+                                .into(findViewById(R.id.profileback))
+                        } ?: run {
+                            Toast.makeText(
+                                this@Profile_,
+                                "No profile image found",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@Profile_, "Failed to load profile: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(
+                        this@Profile_,
+                        "Failed to load profile: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

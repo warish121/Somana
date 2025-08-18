@@ -10,7 +10,8 @@ class CommentAdapter(private val comments: MutableList<Comment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
-        val binding = CommentLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            CommentLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CommentViewHolder(binding)
     }
 

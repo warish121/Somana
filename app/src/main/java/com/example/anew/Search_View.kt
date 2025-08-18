@@ -75,11 +75,16 @@ class Search_View : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@Search_View, "Failed to load users: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@Search_View,
+                    "Failed to load users: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.e("FirebaseError", "Database error: ${error.message}")
             }
         })
     }
+
     private fun navigateToUserProfile(user: Users) {
         if (user.uid == null) {
             Toast.makeText(this, "User data is incomplete", Toast.LENGTH_SHORT).show()
@@ -90,4 +95,5 @@ class Search_View : AppCompatActivity() {
             putExtra("USER_NAME", user.name)
         }
         startActivity(intent)
-    }}
+    }
+}

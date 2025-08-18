@@ -53,7 +53,11 @@ class Comment_Section : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@Comment_Section, "Failed to load comments", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@Comment_Section,
+                        "Failed to load comments",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
     }
@@ -96,12 +100,20 @@ class Comment_Section : AppCompatActivity() {
                             binding.editText.text.clear()
                         }
                         .addOnFailureListener {
-                            Toast.makeText(this@Comment_Section, "Failed to post comment", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@Comment_Section,
+                                "Failed to post comment",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@Comment_Section, "Failed to get user info", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@Comment_Section,
+                        "Failed to get user info",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
     }
