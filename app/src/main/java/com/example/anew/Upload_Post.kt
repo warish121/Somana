@@ -1,12 +1,9 @@
 package com.example.anew
 
 
-import android.app.Activity
-import android.app.ComponentCaller
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -21,13 +18,11 @@ import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
 import com.backendless.files.BackendlessFile
 import com.example.anew.DataClass.Post
-import com.example.anew.Profile_
 import com.github.drjacky.imagepicker.ImagePicker
 import com.github.drjacky.imagepicker.constant.ImageProvider
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
 import java.io.File
 
@@ -187,7 +182,7 @@ class Upload_Post : AppCompatActivity() {
                         }
                     }
                     tempFile
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null
                 }
             }

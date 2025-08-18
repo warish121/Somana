@@ -9,9 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.anew.Adapter.SearchAdapter
-import com.example.anew.DataClass.Post
 import com.example.anew.DataClass.Users
-import com.example.anew.Home_Page
 import com.example.anew.databinding.ActivitySearchViewBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -86,10 +84,6 @@ class Search_View : AppCompatActivity() {
     }
 
     private fun navigateToUserProfile(user: Users) {
-        if (user.uid == null) {
-            Toast.makeText(this, "User data is incomplete", Toast.LENGTH_SHORT).show()
-            return
-        }
         val intent = Intent(this, Profile_::class.java).apply {
             putExtra("USER_ID", user.uid)
             putExtra("USER_NAME", user.name)

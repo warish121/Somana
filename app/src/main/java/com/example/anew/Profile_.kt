@@ -16,22 +16,17 @@ import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
 import com.backendless.files.BackendlessFile
 import com.bumptech.glide.Glide
-import com.example.anew.All_Post
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import java.io.File
 import com.example.anew.DataClass.BannerBack
-import com.example.anew.DataClass.ProfileBack
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-
 import kotlin.apply
-import androidx.core.net.toUri
 
 
 class Profile_ : AppCompatActivity() {
@@ -62,8 +57,8 @@ class Profile_ : AppCompatActivity() {
         loadProfile()
 
 
-        val GoAllpost = findViewById<CardView>(R.id.All_Post)
-        GoAllpost.setOnClickListener {
+        val goAllpost = findViewById<CardView>(R.id.All_Post)
+        goAllpost.setOnClickListener {
             startActivity(Intent(this, All_Post::class.java))
         }
 
@@ -231,7 +226,7 @@ class Profile_ : AppCompatActivity() {
                         }
                     }
                     tempFile
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null
                 }
             }

@@ -12,7 +12,6 @@ import com.example.anew.R
 import com.example.anew.databinding.HomeItemBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import weborb.util.ThreadContext.context
 
 class PostAdapter(
     private val users: List<Users>,

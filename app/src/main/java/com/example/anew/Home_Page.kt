@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.anew.Adapter.PostAdapter
-import com.example.anew.DataClass.LikePost
 import com.example.anew.DataClass.Post
 import com.example.anew.DataClass.Users
 import com.example.anew.databinding.ActivityHomePageBinding
