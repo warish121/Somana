@@ -81,6 +81,10 @@ class Home_Page : AppCompatActivity() {
                     startActivity(Intent(this, Profile_::class.java))
                     true
                 }
+                R.id.search -> {
+                    startActivity(Intent(this, Search_View::class.java))
+                    true
+                }
 
                 else -> false
             }

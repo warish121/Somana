@@ -67,6 +67,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation ("com.google.android.gms:play-services-auth:21.4.0")
 
     // Cloudflare R2 (S3-compatible)
     implementation("aws.sdk.kotlin:s3:1.0.0")

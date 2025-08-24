@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import java.io.File
 import com.example.anew.DataClass.BannerBack
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -55,6 +56,7 @@ class Profile_ : AppCompatActivity() {
 
         loadBannerImage()
         loadProfile()
+        setupBottomNavigation()
 
 
         val goAllpost = findViewById<CardView>(R.id.All_Post)
@@ -308,6 +310,27 @@ class Profile_ : AppCompatActivity() {
                     ).show()
                 }
             })
+
+
+    }
+    private fun setupBottomNavigation() {
+        val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavView.selectedItemId = R.id.profile
+        bottomNavView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> {
+                    startActivity(Intent(this, Home_Page::class.java))
+                    true
+                }
+
+                R.id.search -> {
+                    startActivity(Intent(this, Search_View::class.java))
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
 

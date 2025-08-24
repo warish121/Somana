@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.anew.Adapter.SearchAdapter
 import com.example.anew.DataClass.Users
 import com.example.anew.databinding.ActivitySearchViewBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -31,6 +32,8 @@ class Search_View : AppCompatActivity() {
         binding = ActivitySearchViewBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        setupBottomNavigation()
 
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().reference
@@ -89,5 +92,23 @@ class Search_View : AppCompatActivity() {
             putExtra("USER_NAME", user.name)
         }
         startActivity(intent)
+    }
+    private fun setupBottomNavigation() {
+        val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavView.selectedItemId = R.id.search
+        bottomNavView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.profile -> {
+                    startActivity(Intent(this, Profile_::class.java))
+                    true
+                }
+                R.id.home -> {
+                    startActivity(Intent(this, Home_Page::class.java))
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 }

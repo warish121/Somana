@@ -1,10 +1,12 @@
 package com.example.anew
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.GridView
+import android.widget.ImageView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -22,6 +24,10 @@ class All_Post : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_all_post2)
+        val backtoprofile = findViewById<ImageView>(R.id.backGo)
+        backtoprofile.setOnClickListener {
+            startActivity(Intent(this, Profile_::class.java))
+        }
 
         auth = FirebaseAuth.getInstance()
         gridView = findViewById(R.id.postsGridView)
