@@ -33,17 +33,7 @@
         android:layout_margin="10dp"
         android:visibility="gone"
         />
-    <EditText
-        android:id="@+id/captionText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/uploadedPost"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:hint="Add Caption"
-        android:textColorHint="@color/bottom_nav_unselected"
-        android:layout_margin = "10dp"
-        android:visibility="gone"/>
+
 
     <TextView
         android:id="@+id/uploadtopost"
