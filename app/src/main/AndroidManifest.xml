@@ -19,12 +19,21 @@
         android:theme="@style/Theme.Topbar"
         tools:targetApi="31">
         <activity
+            android:name=".SplashScreen"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Comment_Section"
             android:exported="false" />
         <activity
             android:name=".Search_View"
             android:exported="true">
-            
+
         </activity>
         <activity
             android:name=".showhome"
@@ -37,6 +46,7 @@
         <activity
             android:name=".All_Post"
             android:exported="true">
+
 
         </activity>
         <activity
@@ -57,11 +67,7 @@
         <activity
             android:name=".Sign_Up"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data
