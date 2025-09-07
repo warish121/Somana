@@ -54,7 +54,6 @@ class Upload_Post : AppCompatActivity() {
         uploadbtn.setOnClickListener {
             ImagePicker.with(this)
                 .provider(ImageProvider.BOTH)
-
                 .cropFreeStyle()
                 .createIntentFromDialog { launcher.launch(it) }
 
@@ -112,6 +111,7 @@ class Upload_Post : AppCompatActivity() {
                                 ).show()
                             }
                     }
+                    startActivity(Intent(this, Profile_::class.java))
                 }
             }
         }

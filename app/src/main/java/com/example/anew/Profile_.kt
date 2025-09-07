@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -16,54 +17,82 @@ import com.backendless.async.callback.AsyncCallback
 import com.backendless.exceptions.BackendlessFault
 import com.backendless.files.BackendlessFile
 import com.bumptech.glide.Glide
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
-import java.io.File
 import com.example.anew.DataClass.BannerBack
+import com.example.anew.DataClass.Users
+import com.example.anew.databinding.ActivityProfileBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import kotlin.apply
-
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.database.*
+import java.io.File
 
 class Profile_ : AppCompatActivity() {
 
-
     private lateinit var databaseReference: DatabaseReference
+    private lateinit var auth: FirebaseAuth
     private lateinit var name: TextView
-
+    private lateinit var binding: ActivityProfileBinding
+    private lateinit var users: Users
+    private var isFollowing = false
+    private var followersCount = 0
+    private var followingCount = 0
+    private lateinit var currentUserId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        binding = ActivityProfileBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_profile)
+        setContentView(binding.root)
+
+        auth = FirebaseAuth.getInstance()
         name = findViewById(R.id.username)
         databaseReference = Firebase.database.reference
-        val userId = Firebase.auth.currentUser?.uid
-        databaseReference.child("users").child(userId.toString()).get()
+        currentUserId = Firebase.auth.currentUser?.uid ?: ""
+
+        // Get user ID from intent (for visited profiles) or fallback to current user
+        val userId = intent.getStringExtra("USER_ID") ?: currentUserId
+
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        // Use this userId for all database operations
+        databaseReference.child("users").child(userId).get()
             .addOnSuccessListener {
                 val user = it.child("name").value.toString()
                 name.text = user
             }
             .addOnFailureListener {
                 Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
-
             }
 
-        loadBannerImage()
-        loadProfile()
-        setupBottomNavigation()
+        // Initialize users object with the correct ID
+        users = Users(uid = userId)
 
+        // Check if this is current user's profile or someone else's
+        val isCurrentUserProfile = userId == currentUserId
+
+        // Show/hide edit controls based on profile ownership
+        findViewById<ImageView>(R.id.changeProfile).visibility =
+            if (isCurrentUserProfile) View.VISIBLE else View.GONE
+        findViewById<CardView>(R.id.uploadbanner).visibility =
+            if (isCurrentUserProfile) View.VISIBLE else View.GONE
+        findViewById<CardView>(R.id.upload_Post).visibility =
+            if (isCurrentUserProfile) View.VISIBLE else View.GONE
+
+        // Load user data including followers
+        loadUserData(userId)
+        loadBannerImage(userId)
+        loadProfile(userId)
+        setupBottomNavigation(userId)
 
         val goAllpost = findViewById<CardView>(R.id.All_Post)
         goAllpost.setOnClickListener {
             startActivity(Intent(this, All_Post::class.java))
         }
-
 
         findViewById<ImageView>(R.id.changeProfile).setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
@@ -82,8 +111,6 @@ class Profile_ : AppCompatActivity() {
         findViewById<CardView>(R.id.upload_Post).setOnClickListener {
             startActivity(Intent(this, Upload_Post::class.java))
         }
-
-
     }
 
     private val profilePicker =
@@ -95,30 +122,22 @@ class Profile_ : AppCompatActivity() {
                     uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
 
-
                 uploadToBackendlessImage(uri, "Profile") { backendlessUrl ->
-
-
-                    // Update the profile image in Firebase
-                    val userId = Firebase.auth.currentUser?.uid ?: return@uploadToBackendlessImage
-                    databaseReference.child("users").child(userId).child("profileImage")
+                    // Update the profile image in Firebase for current user
+                    databaseReference.child("users").child(currentUserId).child("profileImage")
                         .setValue(backendlessUrl)
                         .addOnSuccessListener {
                             Toast.makeText(this, "Profile image updated", Toast.LENGTH_SHORT).show()
-
+                            // Reload current user's profile image
+                            loadProfile(currentUserId)
                         }
                         .addOnFailureListener {
                             Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT)
                                 .show()
                         }
-
-
                 }
-
-
             }
         }
-
 
     private val bannerPicker =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -129,33 +148,25 @@ class Profile_ : AppCompatActivity() {
                     uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
 
-
-                //Uploading image to backendless
-
+                // Uploading image to backendless
                 uploadToBackendlessImage(uri, "Banner") { backendlessUrl ->
-                    //uploading img to firebase database
+                    // Uploading img to firebase database for current user
                     val bannerbach = databaseReference
                         .child("users")
-                        .child(Firebase.auth.currentUser!!.uid)
+                        .child(currentUserId)
                         .child("BannerImg")
                         .push()
                     bannerbach.setValue(BannerBack(backendlessUrl))
                         .addOnCompleteListener {
                             Toast.makeText(this, "Uploaded", Toast.LENGTH_SHORT).show()
-                            loadBannerImage()
-
+                            loadBannerImage(currentUserId)
                         }
                         .addOnFailureListener {
                             Toast.makeText(this, "No", Toast.LENGTH_SHORT).show()
                         }
-
-
                 }
-
-
             }
         }
-
 
     private fun uploadToBackendlessImage(
         uri: Uri,
@@ -167,7 +178,6 @@ class Profile_ : AppCompatActivity() {
                 Toast.makeText(this, "Could not get file from URI", Toast.LENGTH_SHORT).show()
                 return
             }
-
 
             Backendless.Files.upload(
                 file,
@@ -205,7 +215,6 @@ class Profile_ : AppCompatActivity() {
         }
     }
 
-
     // Helper to save URL to SharedPreferences
     private fun saveImageUrl(url: String, type: String) {
         val sharedPref = getSharedPreferences("BackendlessImages", MODE_PRIVATE)
@@ -214,7 +223,6 @@ class Profile_ : AppCompatActivity() {
             apply()
         }
     }
-
 
     // Helper to convert Uri to File
     private fun uriToFile(uri: Uri): File? {
@@ -238,12 +246,11 @@ class Profile_ : AppCompatActivity() {
         }
     }
 
-
-    //fetching image from firebase database
-    private fun loadBannerImage() {
+    // Fetching image from firebase database
+    private fun loadBannerImage(userId: String) {
         val bannerRef = FirebaseDatabase.getInstance().reference
             .child("users")
-            .child(Firebase.auth.currentUser!!.uid)
+            .child(userId)  // Use the passed userId
             .child("BannerImg")
 
         // Get the most recent banner (last pushed entry)
@@ -254,12 +261,10 @@ class Profile_ : AppCompatActivity() {
                         val bannerUrl =
                             bannerSnapshot.child("bannerImg").getValue(String::class.java)
                         bannerUrl?.let { url ->
-                            Toast.makeText(this@Profile_, "Ho gaya", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@Profile_, "Banner loaded", Toast.LENGTH_SHORT).show()
                             Glide.with(this@Profile_)
                                 .load(url)
                                 .into(findViewById(R.id.bannerimg))
-
-
                         } ?: run {
                             Toast.makeText(this@Profile_, "No banner found", Toast.LENGTH_SHORT)
                                 .show()
@@ -274,46 +279,40 @@ class Profile_ : AppCompatActivity() {
             })
     }
 
-
-    private fun loadProfile() {
+    private fun loadProfile(userId: String) {
         val profileRef = FirebaseDatabase.getInstance().reference
             .child("users")
-            .child(Firebase.auth.currentUser!!.uid)
-            .child("ProfileImg") // Make sure this matches your database exactly
+            .child(userId)  // Use the passed userId
+            .child("profileImage") // Make sure this matches your database exactly
 
-        // Get the most recent profile image
-        profileRef.orderByKey().limitToLast(1)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (profileSnapshot in snapshot.children) {
-                        val profileBack =
-                            profileSnapshot.child("profileImg").getValue(String::class.java)
-                        profileBack?.let { url ->
-                            Glide.with(this@Profile_)
-                                .load(url)
-                                .into(findViewById(R.id.profileback))
-                        } ?: run {
-                            Toast.makeText(
-                                this@Profile_,
-                                "No profile image found",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
+        // Get the profile image
+        profileRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val profileImageUrl = snapshot.getValue(String::class.java)
+                profileImageUrl?.let { url ->
+                    Glide.with(this@Profile_)
+                        .load(url)
+                        .into(findViewById(R.id.profileback))
+                } ?: run {
                     Toast.makeText(
                         this@Profile_,
-                        "Failed to load profile: ${error.message}",
+                        "No profile image found",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            })
+            }
 
-
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(
+                    this@Profile_,
+                    "Failed to load profile: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
-    private fun setupBottomNavigation() {
+
+    private fun setupBottomNavigation(userId: String) {
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavView.selectedItemId = R.id.profile
         bottomNavView.setOnItemSelectedListener { item ->
@@ -322,18 +321,123 @@ class Profile_ : AppCompatActivity() {
                     startActivity(Intent(this, Home_Page::class.java))
                     true
                 }
-
                 R.id.search -> {
                     startActivity(Intent(this, Search_View::class.java))
                     true
                 }
-
+                R.id.setting -> {
+                    startActivity(Intent(this, Setting::class.java))
+                    true
+                }
                 else -> false
+
+
             }
+        }
+
+        // Use the passed userId for follow functionality
+        val ownerId = userId
+        checkedIfFollowing(ownerId)
+
+        binding.followback.setOnClickListener {
+            toggleFollowing(ownerId)
         }
     }
 
+    private fun loadUserData(userId: String) {
+        databaseReference.child("users").child(userId).addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.getValue(Users::class.java)
+                    user?.let {
+                        users = it.copy(uid = userId) // Ensure UID is set
+                        binding.username.text = user.name ?: "Unknown User"
 
+                        // Load followers count
+                        loadFollowersCount(userId)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@Profile_, "Failed to load user data", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
+
+    private fun checkedIfFollowing(ownerId: String) {
+        val currentUser = auth.currentUser?.uid ?: return
+
+        // Don't show follow button for own profile
+        if (currentUser == ownerId) {
+            binding.followback.visibility = View.GONE
+            return
+        } else {
+            binding.followback.visibility = View.VISIBLE
+            binding.changprofile.visibility = View.GONE
+            binding.uploadbanner.visibility = View.GONE
+            binding.uploadPost.visibility = View.GONE
+        }
+
+        databaseReference.child("users").child(ownerId).child("followers").child(currentUser)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    isFollowing = snapshot.exists()
+                    updateFollowersButton()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@Profile_, "Failed to check follow status", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun toggleFollowing(ownerId: String) {
+        val currentUser = auth.currentUser?.uid ?: return
+        val followRef = databaseReference.child("users").child(ownerId).child("followers").child(currentUser)
+
+        if (isFollowing) {
+            // Unfollow - remove from followers
+            followRef.removeValue()
+                .addOnSuccessListener {
+                    isFollowing = false
+                    updateFollowersButton()
+                    loadFollowersCount(ownerId) // Refresh count
+                    Toast.makeText(this@Profile_, "Unfollowed", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this@Profile_, "Failed to unfollow", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            // Follow - add to followers
+            followRef.setValue(true)
+                .addOnSuccessListener {
+                    isFollowing = true
+                    updateFollowersButton()
+                    loadFollowersCount(ownerId) // Refresh count
+                    Toast.makeText(this@Profile_, "Followed", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this@Profile_, "Failed to follow", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun loadFollowersCount(ownerId: String) {
+        databaseReference.child("users").child(ownerId).child("followers")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val count = snapshot.childrenCount.toInt()
+                    binding.Followers.text = count.toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@Profile_, "Failed to load followers count", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun updateFollowersButton() {
+        binding.followertext.text = if (isFollowing) "Following" else "Follow"
+    }
 }
-
-

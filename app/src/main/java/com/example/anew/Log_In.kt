@@ -52,6 +52,11 @@ class Log_In : AppCompatActivity() {
         }
         configureGoogleSignIn()
 
+        binding.forgotPassword.setOnClickListener {
+            val intent = Intent(this, ResetPassword::class.java)
+            startActivity(intent)
+        }
+
 
 
         binding.loginBtn.setOnClickListener {

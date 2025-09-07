@@ -88,7 +88,7 @@ class Search_View : AppCompatActivity() {
 
     private fun navigateToUserProfile(user: Users) {
         val intent = Intent(this, Profile_::class.java).apply {
-            putExtra("USER_ID", user.uid)
+            putExtra("USER_ID", user.uid)  // This should match what Profile_ expects
             putExtra("USER_NAME", user.name)
         }
         startActivity(intent)
@@ -104,6 +104,10 @@ class Search_View : AppCompatActivity() {
                 }
                 R.id.home -> {
                     startActivity(Intent(this, Home_Page::class.java))
+                    true
+                }
+                R.id.setting -> {
+                    startActivity(Intent(this, Setting::class.java))
                     true
                 }
 

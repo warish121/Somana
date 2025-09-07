@@ -29,7 +29,6 @@
         app:layout_constraintTop_toBottomOf="@id/backArrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         android:layout_margin="10dp"
         android:visibility="gone"
         />
@@ -39,7 +38,7 @@
         android:id="@+id/uploadtopost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload"
+        android:text="@string/upload"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

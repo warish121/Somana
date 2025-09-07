@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SplashScreen"
+    android:fitsSystemWindows="true"
     android:background="@color/black">
 
     <ImageView
@@ -30,6 +31,5 @@
         android:textColor="@color/white"
         android:fontFamily="@font/aclonica"
         android:textSize="18sp"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Sign_Up"
+    android:fitsSystemWindows="true"
     android:background="#0F0F0F">
 
 
@@ -174,6 +175,7 @@
                 android:drawablePadding="12dp"
                 android:padding="15dp"
                 android:inputType="textPassword"/>
+
 
             <Button
                 android:id="@+id/signupBtn"

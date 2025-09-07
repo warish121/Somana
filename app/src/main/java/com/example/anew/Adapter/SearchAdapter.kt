@@ -4,7 +4,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.anew.DataClass.Users
+import com.example.anew.R
 import com.example.anew.databinding.SearchItemBinding
 
 class SearchAdapter(
@@ -50,6 +52,14 @@ class SearchAdapter(
 
         fun bind(user: Users) {
             binding.nametext.text = user.name ?: "Unknown"
+
+            Glide.with(binding.root)
+                .load(user.profileImage)
+                .placeholder(R.drawable.defaultprofile)
+                .error(R.drawable.defaultprofile)
+                .circleCrop()
+                .into(binding.imageview)
+
 
             binding.root.setOnClickListener {
                 if (user.uid != null) {

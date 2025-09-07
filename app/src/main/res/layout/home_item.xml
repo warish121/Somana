@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     android:background="@color/black">
 
 
@@ -88,7 +89,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:orientation="vertical"
-
                 android:layout_margin="10dp">
 
                 <ImageView
@@ -104,6 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
+                    android:layout_gravity="center_horizontal"
                     android:textSize="14sp"
                     android:textColor="@color/white"
                     />
@@ -125,19 +126,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/comment"
-
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"/>
-
+                    android:padding="5dp"/>
                 <TextView
-                    android:id="@+id/comment_text"
+                    android:id="@+id/commenttext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="123 Comments"
                     android:padding="5dp"
                     android:textSize="14sp"
+                    android:gravity="center_horizontal"
                     android:textColor="@color/white"
-                    />
+                    android:textStyle="bold"/>
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -162,8 +163,8 @@
                     android:id="@+id/share_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="123 Share"
                     android:padding="5dp"
+                    android:layout_gravity="center_horizontal"
                     android:textSize="14sp"
                     android:textColor="@color/white"
                     android:textStyle="bold"/>
