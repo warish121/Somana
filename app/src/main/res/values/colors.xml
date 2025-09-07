@@ -6,7 +6,7 @@
     <color name="likeBtn">#3873D5</color>
 
 
-    <color name="bottom_nav_selected">#FFFFFF</color> <!-- Selected color (e.g., white) -->
+    <color name="bottom_nav_selected">#0174DE</color> <!-- Selected color (e.g., white) -->
     <color name="bottom_nav_unselected">#757575</color> <!-- Unselected color (e.g., Gray) -->
 
 

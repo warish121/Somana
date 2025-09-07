@@ -64,6 +64,7 @@ class Comment_Section : AppCompatActivity() {
 
     private fun uploadComment() {
         val commentText = binding.editText.text.toString().trim()
+
         if (commentText.isEmpty()) {
             Toast.makeText(this, "Comment cannot be empty", Toast.LENGTH_SHORT).show()
             return
@@ -73,6 +74,8 @@ class Comment_Section : AppCompatActivity() {
             Toast.makeText(this, "You need to login first", Toast.LENGTH_SHORT).show()
             return
         }
+
+
 
         // Get user name from database
         FirebaseDatabase.getInstance().getReference("users")
@@ -88,7 +91,8 @@ class Comment_Section : AppCompatActivity() {
                     val comment = Comment(
                         text = commentText,
                         cName = userName,
-                        id = currentUser.uid
+                        id = currentUser.uid,
+
 
                     )
 

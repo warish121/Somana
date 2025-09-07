@@ -31,5 +31,4 @@
         android:fontFamily="@font/aclonica"
         android:textSize="18sp"/>
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

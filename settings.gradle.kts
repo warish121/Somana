@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "New"
+rootProject.name = "Somana"
 include(":app")
  

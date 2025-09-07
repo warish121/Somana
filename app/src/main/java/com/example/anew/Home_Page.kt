@@ -32,7 +32,6 @@ class Home_Page : AppCompatActivity() {
         binding = ActivityHomePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         // Initialize Firebase
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().reference
@@ -48,14 +47,16 @@ class Home_Page : AppCompatActivity() {
             return
         }
 
-
         // Fetch all users
         loadPosts()
         setupExceptionHandler()
     }
 
     private fun setupRecyclerView() {
-        postadapter = PostAdapter(userList, profileList, postList)
+        postadapter = PostAdapter(userList, profileList, postList) { user ->
+            navigateToProfile(user)
+        }
+
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = postadapter
 
@@ -85,7 +86,6 @@ class Home_Page : AppCompatActivity() {
                     startActivity(Intent(this, Search_View::class.java))
                     true
                 }
-
                 else -> false
             }
         }
@@ -110,7 +110,6 @@ class Home_Page : AppCompatActivity() {
                         return@forEach
                     }
                 }
-
 
                 // If posts exist, load them
                 snapshot.children.forEach { userSnapshot ->
@@ -169,5 +168,11 @@ class Home_Page : AppCompatActivity() {
         }
     }
 
-
+    private fun navigateToProfile(user: Users) {
+        val intent = Intent(this, Profile_::class.java).apply {
+            putExtra("USER_ID", user.uid)
+            putExtra("USER_NAME", user.name)
+        }
+        startActivity(intent)
+    }
 }
