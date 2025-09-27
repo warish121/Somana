@@ -94,6 +94,7 @@ class Profile_ : AppCompatActivity() {
             startActivity(Intent(this, All_Post::class.java))
         }
 
+
         findViewById<ImageView>(R.id.changeProfile).setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 type = "image/*"
