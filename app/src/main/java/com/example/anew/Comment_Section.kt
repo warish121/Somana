@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.anew.Adapter.CommentAdapter
 import com.example.anew.DataClass.Comment
+import com.example.anew.DataClass.Users
 import com.example.anew.databinding.ActivityCommentSectionBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -17,6 +18,7 @@ class Comment_Section : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var postId: String
     private val commentList = mutableListOf<Comment>()
+    private val user = listOf<Users>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,7 @@ class Comment_Section : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         postId = intent.getStringExtra("postId") ?: ""
 
-        commentAdapter = CommentAdapter(commentList)
+        commentAdapter = CommentAdapter(commentList, user)
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@Comment_Section)
             adapter = commentAdapter
