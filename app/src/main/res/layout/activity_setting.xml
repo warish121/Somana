@@ -47,34 +47,6 @@
             android:textColor="@color/white"
             android:textSize="20sp"/>
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/name"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/email1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email: "
-            android:fontFamily="@font/poppins_medium"
-            android:textColor="#0174DE"
-            android:textSize="18sp"
-            />
-        <TextView
-            android:id="@+id/emailtext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            />
-    </LinearLayout>
 
 
     <Button

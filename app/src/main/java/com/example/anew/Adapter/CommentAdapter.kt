@@ -6,9 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.anew.DataClass.Comment
 import com.example.anew.DataClass.Users
+import com.example.anew.R
 import com.example.anew.databinding.CommentLayoutBinding
 
-class CommentAdapter(private val comments: MutableList<Comment>, private val user: List<Users>) :
+class CommentAdapter(private val comments: MutableList<Comment>, private var user: List<Users>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -38,6 +39,9 @@ class CommentAdapter(private val comments: MutableList<Comment>, private val use
 
             Glide.with(binding.root)
                 .load(user.profileImage)
+                .placeholder(R.drawable.defaultprofile)
+                .error(R.drawable.defaultprofile)
+                .circleCrop()
                 .into(binding.profileImage)
 
 

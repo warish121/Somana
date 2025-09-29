@@ -71,8 +71,6 @@ class Upload_Post : AppCompatActivity() {
                 val postImage = findViewById<ImageView>(R.id.uploadedPost)
                 val uploadthepost = findViewById<TextView>(R.id.uploadtopost)
 
-
-
                 postImage.visibility = View.VISIBLE
                 uploadthepost.visibility = View.VISIBLE
 
