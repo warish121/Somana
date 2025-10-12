@@ -25,10 +25,12 @@ class Home_Page : AppCompatActivity() {
     private val userList = mutableListOf<Users>()
     private val profileList = mutableListOf<String>()
     private val postList = mutableListOf<Post>()
+    private var backPressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         binding = ActivityHomePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -75,19 +77,29 @@ class Home_Page : AppCompatActivity() {
 
     private fun setupBottomNavigation() {
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+
+        // Set home as selected initially
         bottomNavView.selectedItemId = R.id.home
+
         bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.home -> {
+                    // Already on home, do nothing or refresh
+                    true
+                }
                 R.id.profile -> {
-                    startActivity(Intent(this, Profile_::class.java))
+                    val intent = Intent(this, Profile_::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.search -> {
-                    startActivity(Intent(this, Search_View::class.java))
+                    val intent = Intent(this, Search_View::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.setting -> {
-                    startActivity(Intent(this, Setting::class.java))
+                    val intent = Intent(this, Setting::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false
@@ -178,5 +190,15 @@ class Home_Page : AppCompatActivity() {
             putExtra("USER_NAME", user.name)
         }
         startActivity(intent)
+    }
+    override fun onBackPressed() {
+        // Double tap to exit
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed()
+            finishAffinity() // Close the app completely
+        } else {
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 }

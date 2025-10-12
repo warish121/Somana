@@ -315,26 +315,35 @@ class Profile_ : AppCompatActivity() {
 
     private fun setupBottomNavigation(userId: String) {
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+
+        // Set home as selected initially
         bottomNavView.selectedItemId = R.id.profile
+
         bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.profile -> {
+                    // Already on home, do nothing or refresh
+                    true
+                }
                 R.id.home -> {
-                    startActivity(Intent(this, Home_Page::class.java))
+                    val intent = Intent(this, Home_Page::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.search -> {
-                    startActivity(Intent(this, Search_View::class.java))
+                    val intent = Intent(this, Search_View::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.setting -> {
-                    startActivity(Intent(this, Setting::class.java))
+                    val intent = Intent(this, Setting::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false
-
-
             }
         }
+
 
         // Use the passed userId for follow functionality
         val ownerId = userId

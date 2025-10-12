@@ -5,6 +5,6 @@
     <string name="default_web_client_id">903660523163-0vmkp1ht02mgs231mcqsvj6hn0ek638v.apps.googleusercontent.com</string>
     <string name="forgot_password">Forgot password ?</string>
     <string name="reset_password">Reset Password</string>
-    <string name="name">Name:</string>
+    <string name="name">Name: </string>
     <string name="upload">Upload</string>
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="@color/white">
+
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#666666"
+        android:strokeWidth="1.5"
+        android:pathData="M3,12c0,-4.42 3.58,-8 8,-8h2c4.42,0 8,3.58 8,8s-3.58,8 -8,8h-1.5l-2.5,2.5V20C6.58,20 3,16.42 3,12z"/>
+
+    <!-- Three horizontal lines -->
+    <path android:strokeColor="#666666" android:strokeWidth="1.5" android:pathData="M7,10h10"/>
+    <path android:strokeColor="#666666" android:strokeWidth="1.5" android:pathData="M7,12h10"/>
+    <path android:strokeColor="#666666" android:strokeWidth="1.5" android:pathData="M7,14h8"/>
+</vector>

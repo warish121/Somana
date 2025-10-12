@@ -30,6 +30,11 @@ class Setting : AppCompatActivity() {
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root) // This is crucial!
 
+        binding.back.setOnClickListener {
+            val intent = Intent(this, Home_Page::class.java)
+            startActivity(intent)
+        }
+
 
 
         // Initialize Firebase components
