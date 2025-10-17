@@ -57,6 +57,7 @@ class SearchAdapter(
                 .load(user.profileImage)
                 .placeholder(R.drawable.defaultprofile)
                 .error(R.drawable.defaultprofile)
+                .centerCrop()
                 .circleCrop()
                 .into(binding.imageview)
 

@@ -18,7 +18,6 @@ class Comment_Section : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var postId: String
     private val commentList = mutableListOf<Comment>()
-    private val user = listOf<Users>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +27,7 @@ class Comment_Section : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         postId = intent.getStringExtra("postId") ?: ""
 
-        commentAdapter = CommentAdapter(commentList, user)
+        commentAdapter = CommentAdapter(commentList)
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@Comment_Section)
             adapter = commentAdapter
@@ -49,7 +48,11 @@ class Comment_Section : AppCompatActivity() {
                     val tempList = mutableListOf<Comment>()
                     for (data in snapshot.children) {
                         val comment = data.getValue(Comment::class.java)
-                        comment?.let { tempList.add(it) }
+                        comment?.let {
+                            tempList.add(it)
+                            // Load user data for each comment
+                            loadUserData(it.id, it)
+                        }
                     }
                     commentAdapter.updateComments(tempList)
                 }
@@ -60,6 +63,23 @@ class Comment_Section : AppCompatActivity() {
                         "Failed to load comments",
                         Toast.LENGTH_SHORT
                     ).show()
+                }
+            })
+    }
+
+    private fun loadUserData(userId: String, comment: Comment) {
+        FirebaseDatabase.getInstance().getReference("users")
+            .child(userId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.getValue(Users::class.java)
+                    user?.let {
+                        commentAdapter.updateUser(userId, it)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // User data loading failed, adapter will use default image
                 }
             })
     }
@@ -77,14 +97,14 @@ class Comment_Section : AppCompatActivity() {
             return
         }
 
-
-
-        // Get user name from database
+        // Get user name and profile image from database
         FirebaseDatabase.getInstance().getReference("users")
             .child(currentUser.uid)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val userName = snapshot.child("name").value.toString()
+                    val profileImage = snapshot.child("profileImage").value.toString() ?: ""
+
                     val commentId = FirebaseDatabase.getInstance().reference
                         .child("comments")
                         .child(postId)
@@ -93,9 +113,7 @@ class Comment_Section : AppCompatActivity() {
                     val comment = Comment(
                         text = commentText,
                         cName = userName,
-                        id = currentUser.uid,
-
-
+                        id = currentUser.uid
                     )
 
                     FirebaseDatabase.getInstance().getReference("comments")

@@ -9,8 +9,10 @@ import com.example.anew.DataClass.Users
 import com.example.anew.R
 import com.example.anew.databinding.CommentLayoutBinding
 
-class CommentAdapter(private val comments: MutableList<Comment>, private var user: List<Users>) :
+class CommentAdapter(private val comments: MutableList<Comment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
+
+    private val userMap = mutableMapOf<String, Users>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val binding =
@@ -19,7 +21,9 @@ class CommentAdapter(private val comments: MutableList<Comment>, private var use
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        holder.bind(comments[position], user[position])
+        val comment = comments[position]
+        val user = userMap[comment.id] // Use comment's user ID to get user data
+        holder.bind(comment, user)
     }
 
     override fun getItemCount(): Int = comments.size
@@ -30,21 +34,35 @@ class CommentAdapter(private val comments: MutableList<Comment>, private var use
         notifyDataSetChanged()
     }
 
+    fun updateUser(userId: String, user: Users) {
+        userMap[userId] = user
+        notifyDataSetChanged()
+    }
+
     inner class CommentViewHolder(private val binding: CommentLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(comment: Comment, user: Users) {
+        fun bind(comment: Comment, user: Users?) {
             binding.username.text = comment.cName
             binding.commentText.text = comment.text
 
-            Glide.with(binding.root)
-                .load(user.profileImage)
-                .placeholder(R.drawable.defaultprofile)
-                .error(R.drawable.defaultprofile)
-                .circleCrop()
-                .into(binding.profileImage)
-
-
+            // Load profile image if user data is available
+            user?.profileImage?.let { imageUrl ->
+                if (imageUrl.isNotEmpty()) {
+                    Glide.with(binding.root)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.defaultprofile)
+                        .error(R.drawable.defaultprofile)
+                        .fitCenter()
+                        .circleCrop()
+                        .into(binding.profileimage)
+                } else {
+                    binding.profileimage.setImageResource(R.drawable.defaultprofile)
+                }
+            } ?: run {
+                // Set default image if user data is not available
+                binding.profileimage.setImageResource(R.drawable.defaultprofile)
+            }
         }
     }
 }

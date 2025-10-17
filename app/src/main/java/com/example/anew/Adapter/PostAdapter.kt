@@ -88,6 +88,7 @@ class PostAdapter(
                 .load(profileImg.ifEmpty { R.drawable.defaultprofile })
                 .placeholder(R.drawable.defaultprofile)
                 .error(R.drawable.defaultprofile)
+                .fitCenter()
                 .circleCrop()
                 .into(binding.ImageProfile)
 
