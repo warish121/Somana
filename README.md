@@ -75,11 +75,12 @@ Important Security Note: For production, consider:
 * Using environment variables for sensitive configurations
 * Setting up proper app signing
 
-## 👤 Student Routes (User Features)
+## 👤 User Routes (User Features)
 Authentication Routes
 * Splash Screen (SplashActivity.kt) - Initial loading and auth check
 * Login Screen (LoginActivity.kt) - User authentication
 * Signup Screen (SignupActivity.kt) - New user registration
+
 
 ### Main Application Routes
 * Main Feed (Home_Page.kt) - View all posts in realtime
