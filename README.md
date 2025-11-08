@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/23434486/README.md)
+
 # Somana - Realtime Social Media App
 
 A feature-rich Android social media application built with Kotlin and XML that allows users to create posts, view a realtime feed, and manage their profiles.
